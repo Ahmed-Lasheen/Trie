@@ -77,13 +77,39 @@ public:
     // Input: prefix to complete (string)
     // Output: vector of strings that start with the prefix
     // Purpose: Find all complete words that begin with the given prefix
+    void autocomp(TrieNode* root,string currentstring,int currentchar,vector<string>& suggestions)
+    {
+        if(root==nullptr)
+            return;
+        currentstring.push_back(currentchar+'a');
+        if(root->isEndOfWord)
+            suggestions.push_back(currentstring);
+        for(int i=0;i<26;i++)
+            autocomp(root->children[i],currentstring,i,suggestions);  
+        return;
+    }
     vector<string> autocomplete(string prefix) {//LASHEEN
         vector<string> suggestions;
+        TrieNode* currentNode=root;
+        int currentsuggest=0;
+        string start;
         // TODO: Implement this function
         //yo
         //you u is end of word
         //your r is end of word
         //you're e is end of word
+        
+        for(int i=0;i<prefix.length();i++)
+        {
+            if(currentNode->children[prefix[i]-'a']==nullptr)
+                return suggestions;
+            start.push_back(prefix[i]);
+            if(currentNode->isEndOfWord)
+                suggestions.push_back(start);
+            currentNode=currentNode->children[prefix[i]-'a'];
+        }
+        for(int i=0;i<26;i++)
+            autocomp(currentNode->children[i],start,i,suggestions);
         return suggestions;
     }
 };
