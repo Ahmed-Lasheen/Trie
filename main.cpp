@@ -43,8 +43,7 @@ public:
     // Purpose: Initialize the Trie with a root node
     Trie() {
         // TODO: Implement this function
-        //start null
-        root=nullptr;
+        root=new TrieNode();
     }
     
     // Insert a word into the Trie
@@ -70,7 +69,14 @@ public:
     // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
     bool startsWith(string prefix) {//MENNA
         // TODO: Implement this function
-        return false; // placeholder
+        TrieNode* currentNode=root;
+        for(int i=0;i<prefix.length();i++)
+        {
+            if(currentNode->children[prefix[i]-'a']==nullptr)
+                return false;
+            currentNode=currentNode->children[prefix[i]-'a'];
+        }
+        return true; // placeholder
     }
     
     // Get all words that start with the given prefix
