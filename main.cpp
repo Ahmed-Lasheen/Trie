@@ -134,73 +134,97 @@ public:
     // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
     bool startsWith(string prefix)
     {
+        if (!root)
+        {
+            return false;
+        }
+
         TrieNode *current = root;
         for (char c : prefix)
         {
-            int index = c - ' '; // lowercase letters
-            if (index < 0 || index >= 96)
+            if (c < ' ') // we take from space char and upper
             {
-                return false; // character not valid
+                return false;
             }
+
+            int index = c - ' '; // index for all char from space up
             if (current->children[index] == nullptr)
             {
                 return false;
             }
             current = current->children[index];
         }
-
         return true;
     }
 
-    // Get all words that start with the given prefix
-    // Input: prefix to complete (string)
-    // Output: vector of strings that start with the prefix
-    // Purpose: Find all complete words that begin with the given prefix
-    void autocomp(TrieNode *root, string currentstring, int currentchar, vector<string> &suggestions)
+    // helper for autocomplete
+    void autocomp(TrieNode *root, string currentstring, int currentcharindex, vector<string> &suggestions)
     {
-        if (root == nullptr)
+        if (root == nullptr) // the same as if (!root)
+        {
             return;
-        currentstring.push_back(currentchar + ' ');
+        }
+
+        currentstring += (currentcharindex + ' '); // to get the char not the index
+
         if (root->isEndOfWord)
+        {
             suggestions.push_back(currentstring);
+        }
+
         for (int i = 0; i < 96; i++)
+        {
             autocomp(root->children[i], currentstring, i, suggestions);
+        }
         return;
     }
 
     vector<string> autocomplete(string prefix)
-    { // LASHEEN
+    {
         vector<string> suggestions;
+        if (!root)
+            return {};
         TrieNode *currentNode = root;
-        int currentsuggest = 0;
         string start;
-        // TODO: Implement this function
-        // yo
-        // you u is end of word
-        // your r is end of word
-        // you're e is end of word
 
         for (int i = 0; i < prefix.length(); i++)
         {
-            if (currentNode->children[prefix[i] - ' '] == nullptr)
+            char thisChar = prefix[i];
+            int currIndex = thisChar - ' ';
+
+            if (currentNode->children[currIndex] == nullptr) // end of trie branch
+            {
                 return suggestions;
-            start.push_back(prefix[i]);
+            }
+
+            start += thisChar;
+
             if (currentNode->isEndOfWord)
+            {
                 suggestions.push_back(start);
-            currentNode = currentNode->children[prefix[i] - ' '];
+            }
+            currentNode = currentNode->children[currIndex];
         }
+
         for (int i = 0; i < 96; i++)
+        {
             autocomp(currentNode->children[i], start, i, suggestions);
+        }
         return suggestions;
     }
-    void counter(TrieNode *root, int &cnt)
+
+    // Bonus functions : counter
+    void counter(TrieNode *root, int &count)
     {
         if (root == nullptr)
             return;
         if (root->isEndOfWord)
-            cnt++;
+            count++;
+
         for (int i = 0; i < 96; i++)
-            counter(root->children[i], cnt);
+        {
+            counter(root->children[i], count);
+        }
         return;
     }
     void wordcount()
@@ -376,7 +400,7 @@ int main()
     }
 
     cout << "\n=== ALL TESTS COMPLETED ===" << endl;
-    cout << "\n=== BONUS ===" << endl;
+    cout << "\n=== BONUS TESTS===" << endl;
     cout << "\n7. Testing words counter:" << endl;
     cout << "============================" << endl;
     trie.wordcount();
