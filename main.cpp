@@ -50,9 +50,8 @@ public:
     Trie()
     {
         // TODO: Implement this function
-        //start null
-        root=new TrieNode();
-
+        // start null
+        root = new TrieNode();
     }
 
     // Insert a word into the Trie
@@ -60,7 +59,7 @@ public:
     // Output: none
     // Purpose: Add a word to the Trie by creating nodes for each character
     void insert(string word)
-    {              // HAZEM
+    {
         if (!root) // if there is no trie
         {
             root = new TrieNode(); // make a new one
@@ -133,82 +132,82 @@ public:
     // Input: prefix to check (string)
     // Output: boolean indicating if any word has this prefix
     // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
-    bool startsWith(string prefix) {//MENNA
-        TrieNode*current=root;
-        for(char c:prefix)
+    bool startsWith(string prefix)
+    {
+        TrieNode *current = root;
+        for (char c : prefix)
         {
-            int index= c-' '; //lowercase letters
-            if(index<0|| index>=96)
+            int index = c - ' '; // lowercase letters
+            if (index < 0 || index >= 96)
             {
-                return false; //character not valid
-
+                return false; // character not valid
             }
-            if(current->children[index]==nullptr)
+            if (current->children[index] == nullptr)
             {
                 return false;
             }
-            current=current->children[index];
+            current = current->children[index];
         }
-        
-        return true ; 
+
+        return true;
     }
 
     // Get all words that start with the given prefix
     // Input: prefix to complete (string)
     // Output: vector of strings that start with the prefix
     // Purpose: Find all complete words that begin with the given prefix
-    void autocomp(TrieNode* root,string currentstring,int currentchar,vector<string>& suggestions)
+    void autocomp(TrieNode *root, string currentstring, int currentchar, vector<string> &suggestions)
     {
-        if(root==nullptr)
+        if (root == nullptr)
             return;
-        currentstring.push_back(currentchar+' ');
-        if(root->isEndOfWord)
+        currentstring.push_back(currentchar + ' ');
+        if (root->isEndOfWord)
             suggestions.push_back(currentstring);
-        for(int i=0;i<96;i++)
-            autocomp(root->children[i],currentstring,i,suggestions);  
+        for (int i = 0; i < 96; i++)
+            autocomp(root->children[i], currentstring, i, suggestions);
         return;
     }
 
     vector<string> autocomplete(string prefix)
     { // LASHEEN
         vector<string> suggestions;
-        TrieNode* currentNode=root;
-        int currentsuggest=0;
+        TrieNode *currentNode = root;
+        int currentsuggest = 0;
         string start;
         // TODO: Implement this function
-        //yo
-        //you u is end of word
-        //your r is end of word
-        //you're e is end of word
-        
-        for(int i=0;i<prefix.length();i++)
+        // yo
+        // you u is end of word
+        // your r is end of word
+        // you're e is end of word
+
+        for (int i = 0; i < prefix.length(); i++)
         {
-            if(currentNode->children[prefix[i]-' ']==nullptr)
+            if (currentNode->children[prefix[i] - ' '] == nullptr)
                 return suggestions;
             start.push_back(prefix[i]);
-            if(currentNode->isEndOfWord)
+            if (currentNode->isEndOfWord)
                 suggestions.push_back(start);
-            currentNode=currentNode->children[prefix[i]-' '];
+            currentNode = currentNode->children[prefix[i] - ' '];
         }
-        for(int i=0;i<96;i++)
-            autocomp(currentNode->children[i],start,i,suggestions);
+        for (int i = 0; i < 96; i++)
+            autocomp(currentNode->children[i], start, i, suggestions);
         return suggestions;
     }
-    void counter(TrieNode* root,int& cnt)
+    void counter(TrieNode *root, int &cnt)
     {
-        if(root==nullptr)
+        if (root == nullptr)
             return;
-        if(root->isEndOfWord)
+        if (root->isEndOfWord)
             cnt++;
-        for(int i=0;i<96;i++)
-            counter(root->children[i],cnt);  
+        for (int i = 0; i < 96; i++)
+            counter(root->children[i], cnt);
         return;
     }
     void wordcount()
     {
-        int count=0;
-        counter(root,count);
-        cout<<"Total words in Trie: "<<count<<endl;
+        int count = 0;
+        counter(root, count);
+        cout << "Total words in Trie: " << count << endl;
     }
 };
 
@@ -375,7 +374,7 @@ int main()
         bool found = trie.search(word);
         cout << "Search '" << word << "': " << (found ? "FOUND" : "NOT FOUND") << endl;
     }
-    
+
     cout << "\n=== ALL TESTS COMPLETED ===" << endl;
     cout << "\n=== BONUS ===" << endl;
     cout << "\n7. Testing words counter:" << endl;
