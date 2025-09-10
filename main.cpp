@@ -29,13 +29,6 @@ class Trie
 private:
     TrieNode *root;
 
-    // Helper function to find all words from a node
-    void findAllWords(TrieNode *node, string currentWord, vector<string> &results)
-    {
-        // TODO: Implement this function
-        // not needed
-    }
-
     // Helper for remove
     bool removeHelper(TrieNode *node, const string &word, int wordIdx)
     {
@@ -79,6 +72,26 @@ private:
             }
         }
         return false;
+    }
+    // Helper for finding longest word
+    void findLongestWord(TrieNode *node, string current, string &longest)
+    {
+        if (!node)
+            return;
+        // if the node is end of word and the whole string is longer than the current longest word
+        if (node->isEndOfWord && current.length() > longest.length())
+        {
+            longest = current; // replace longest
+        }
+
+        for (int i = 0; i < 96; i++)
+        {
+            if (node->children[i])
+            {
+                char nextChar = i + ' ';
+                findLongestWord(node->children[i], current + nextChar, longest); // check for every child found
+            }
+        }
     }
 
 public:
@@ -258,6 +271,13 @@ public:
         int count = 0;
         counter(root, count);
         cout << "Total words in Trie: " << count << endl;
+    }
+
+    string longestWord()
+    {
+        string longest = "";
+        findLongestWord(root, "", longest);
+        return longest;
     }
 };
 
@@ -445,8 +465,13 @@ int main()
     cout << "============================" << endl;
     trie.wordcount();
 
-    cout << "\n8. Testing longest word:" << endl;
+    cout << "\n8. Testing longest sentence:" << endl;
     cout << "============================" << endl;
+    string longest = trie.longestWord();
+    cout << "The longest sentence is : " << longest << endl;
+    trie.insert("Banana Chocolate Milk I love");
+    longest = trie.longestWord();
+    cout << "The longest sentence is : " << longest << endl;
 
     cout << "\n9. Testing remove word:" << endl;
     cout << "============================" << endl;
