@@ -8,7 +8,7 @@ class TrieNode
 {
 public:
     // Each node has up to 26 children (for each letter)
-    TrieNode *children[26];
+    TrieNode *children[96];
 
     // Marks if this node completes a word
     bool isEndOfWord;
@@ -20,7 +20,7 @@ public:
     TrieNode()
     {
         isEndOfWord = false;
-        for (int i = 0; i < 26; i++)
+        for (int i = 0; i < 96; i++)
         {
             children[i] = nullptr;
         }
@@ -137,8 +137,8 @@ public:
         TrieNode*current=root;
         for(char c:prefix)
         {
-            int index= c-'a'; //lowercase letters
-            if(index<0|| index>=26)
+            int index= c-' '; //lowercase letters
+            if(index<0|| index>=96)
             {
                 return false; //character not valid
 
@@ -161,10 +161,10 @@ public:
     {
         if(root==nullptr)
             return;
-        currentstring.push_back(currentchar+'a');
+        currentstring.push_back(currentchar+' ');
         if(root->isEndOfWord)
             suggestions.push_back(currentstring);
-        for(int i=0;i<26;i++)
+        for(int i=0;i<96;i++)
             autocomp(root->children[i],currentstring,i,suggestions);  
         return;
     }
@@ -183,14 +183,14 @@ public:
         
         for(int i=0;i<prefix.length();i++)
         {
-            if(currentNode->children[prefix[i]-'a']==nullptr)
+            if(currentNode->children[prefix[i]-' ']==nullptr)
                 return suggestions;
             start.push_back(prefix[i]);
             if(currentNode->isEndOfWord)
                 suggestions.push_back(start);
-            currentNode=currentNode->children[prefix[i]-'a'];
+            currentNode=currentNode->children[prefix[i]-' '];
         }
-        for(int i=0;i<26;i++)
+        for(int i=0;i<96;i++)
             autocomp(currentNode->children[i],start,i,suggestions);
         return suggestions;
     }
@@ -200,7 +200,7 @@ public:
             return;
         if(root->isEndOfWord)
             cnt++;
-        for(int i=0;i<26;i++)
+        for(int i=0;i<96;i++)
             counter(root->children[i],cnt);  
         return;
     }
