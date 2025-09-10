@@ -7,15 +7,11 @@ using namespace std;
 class TrieNode
 {
 public:
-    // Each node has up to 26 children (for each letter)
+    // Each node has up to 96 children (for each letter)
     TrieNode *children[96];
 
     // Marks if this node completes a word
     bool isEndOfWord;
-    // you  //u is end of word
-    // your
-    // you're
-
     // Constructor
     TrieNode()
     {
@@ -32,32 +28,80 @@ class Trie
 {
 private:
     TrieNode *root;
-    // Helper function to find all words from a node
-    // Input: current node, current word formed so far, results vector to store words
-    // Output: none (modifies results vector by reference)
-    // Purpose: Recursively find all complete words starting from the given node
-    void findAllWords(TrieNode *node, string currentWord, vector<string> &results)
+
+    // Helper for remove
+    bool removeHelper(TrieNode *node, const string &word, int wordIdx)
     {
-        // TODO: Implement this function
+        if (!node)
+            return false;
+        if (wordIdx == word.size())
+        {
+            if (!node->isEndOfWord)
+                return false;
+            node->isEndOfWord = false;
+            for (int i = 0; i < 96; i++)
+            {
+                if (node->children[i])
+                    return false;
+            }
+            return true;
+        }
+
+        char c = word[wordIdx];
+        if (c < ' ')
+            return false;
+        int index = c - ' ';
+
+        if (node->children[index] == nullptr)
+            return false;
+
+        bool shouldDeleteChild = removeHelper(node->children[index], word, wordIdx + 1);
+
+        if (shouldDeleteChild)
+        {
+            delete node->children[index];
+            node->children[index] = nullptr;
+            if (!node->isEndOfWord)
+            {
+                for (int i = 0; i < 96; i++)
+                {
+                    if (node->children[i])
+                        return false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
-    // int count=0;
+    // Helper for finding longest word
+    void findLongestWord(TrieNode *node, string current, string &longest)
+    {
+        if (!node)
+            return;
+        // if the node is end of word and the whole string is longer than the current longest word
+        if (node->isEndOfWord && current.length() > longest.length())
+        {
+            longest = current; // replace longest
+        }
+
+        for (int i = 0; i < 96; i++)
+        {
+            if (node->children[i])
+            {
+                char nextChar = i + ' ';
+                findLongestWord(node->children[i], current + nextChar, longest); // check for every child found
+            }
+        }
+    }
 
 public:
-    // Constructor
-    // Input: none
-    // Output: none
-    // Purpose: Initialize the Trie with a root node
     Trie()
     {
         // TODO: Implement this function
-        // start null
         root = new TrieNode();
     }
 
     // Insert a word into the Trie
-    // Input: word to insert (string)
-    // Output: none
-    // Purpose: Add a word to the Trie by creating nodes for each character
     void insert(string word)
     {
         if (!root) // if there is no trie
@@ -65,9 +109,10 @@ public:
             root = new TrieNode(); // make a new one
         }
         TrieNode *temp = root;
-
-        for (char thisChar : word)
+        int i = 0;
+        for (int i = 0; i < word.length(); i++)
         {
+            char thisChar = word[i];
             if (thisChar < ' ')
             {
                 continue;
@@ -81,6 +126,10 @@ public:
                 // just like in the frequency array when assigning 1 to the index of a character
                 temp->children[index] = new TrieNode();
             }
+            if (temp->children[0])
+            {
+                temp->isEndOfWord = true; // Hazem<- is end of word Magdy
+            }
             // then after this we anyway go to that node if there is a node or not
             temp = temp->children[index];
         }
@@ -88,9 +137,6 @@ public:
     }
 
     // Search for a word in the Trie
-    // Input: word to search for (string)
-    // Output: boolean indicating if the word exists
-    // Purpose: Check if the complete word exists in the Trie
     bool search(string word)
     {
         if (!root)
@@ -119,9 +165,6 @@ public:
     }
 
     // Check if any word starts with the given prefix //yo //you //your //you're //yo yo
-    // Input: prefix to check (string)
-    // Output: boolean indicating if any word has this prefix
-    // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
     bool startsWith(string prefix)
     {
         if (!root)
@@ -203,6 +246,12 @@ public:
         return suggestions;
     }
 
+    void remove(string word)
+    {
+        if (!root)
+            return;
+        removeHelper(root, word, 0);
+    }
     // Bonus functions : counter
     void counter(TrieNode *root, int &count)
     {
@@ -223,12 +272,16 @@ public:
         counter(root, count);
         cout << "Total words in Trie: " << count << endl;
     }
+
+    string longestWord()
+    {
+        string longest = "";
+        findLongestWord(root, "", longest);
+        return longest;
+    }
 };
 
 // Main function
-// Input: none
-// Output: integer return code
-// Purpose: Program entry point, run tests and interactive demo
 int main()
 {
     cout << "=== TRIE DATA STRUCTURE IMPLEMENTATION ===" << endl;
@@ -379,10 +432,30 @@ int main()
 
     trie.insert("Hello");
     trie.insert("WORLD");
-    // H  H
-    // H
+    trie.insert("Hazem Magdy Lasheen");
+    trie.insert("_Hello");
+    trie.insert("1234 Ahmed");
+    trie.insert("ahmed-lasheen");
+    trie.insert("lasheen_hazem");
+    trie.insert("chocolate milk");
 
-    vector<string> caseWords = {"hello", "Hello", "WORLD", "world"};
+    vector<string> caseWords = {
+        "hello",               // not found
+        "Hello",               // found
+        "WORLD",               // found
+        "world",               // not found
+        "HAZEM",               // not found (all uppercase)
+        "Hazem Magdy Lasheen", // found
+        "_Hello",              // found
+        "1234 Ahmed",          // found
+        "hazem_lasheen",       // found
+        "hazem_Lasheen",       // not found "L capital"
+        "ahmed-lasheen",       // found
+        "lasheen_hazem",       // found
+        "chocolate",           // found
+        "chocolate milk"       // found
+    };
+
     for (const string &word : caseWords)
     {
         bool found = trie.search(word);
@@ -394,6 +467,25 @@ int main()
     cout << "\n7. Testing words counter:" << endl;
     cout << "============================" << endl;
     trie.wordcount();
+
+    cout << "\n8. Testing longest sentence:" << endl;
+    cout << "============================" << endl;
+    string longest = trie.longestWord();
+    cout << "The longest sentence is : " << longest << endl;
+    trie.insert("Banana Chocolate Milk I love");
+    longest = trie.longestWord();
+    cout << "The longest sentence is : " << longest << endl;
+
+    cout << "\n9. Testing remove word:" << endl;
+    cout << "============================" << endl;
+
+    bool found = trie.search("_Hello");
+    trie.remove("_hello");                                                              // should not do anything
+    cout << "Search '" << "_Hello" << "': " << (found ? "FOUND" : "NOT FOUND") << endl; // FOUND
+    trie.remove("_Hello");                                                              // should remove _Hello
+    found = trie.search("_Hello");
+    cout << "Search '" << "_Hello" << "': " << (found ? "FOUND" : "NOT FOUND") << endl; // NOT FOUND
+
     cout << "\n=== BONUS COMPLETED ===" << endl;
 
     return 0;
