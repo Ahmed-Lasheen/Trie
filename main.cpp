@@ -128,7 +128,7 @@ public:
             }
             if (temp->children[0])
             {
-                temp->isEndOfWord = true; // Hazem Magdy
+                temp->isEndOfWord = true; // Hazem<- is end of word Magdy
             }
             // then after this we anyway go to that node if there is a node or not
             temp = temp->children[index];
@@ -437,6 +437,7 @@ int main()
     trie.insert("1234 Ahmed");
     trie.insert("ahmed-lasheen");
     trie.insert("lasheen_hazem");
+    trie.insert("chocolate milk");
 
     vector<string> caseWords = {
         "hello",               // not found
@@ -450,7 +451,9 @@ int main()
         "hazem_lasheen",       // found
         "hazem_Lasheen",       // not found "L capital"
         "ahmed-lasheen",       // found
-        "lasheen_hazem"        // found
+        "lasheen_hazem",       // found
+        "chocolate",           // found
+        "chocolate milk"       // found
     };
 
     for (const string &word : caseWords)
