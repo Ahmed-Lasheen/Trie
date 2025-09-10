@@ -40,6 +40,7 @@ private:
     {
         // TODO: Implement this function
     }
+    // int count=0;
 
 public:
     // Constructor
@@ -192,6 +193,22 @@ public:
         for(int i=0;i<26;i++)
             autocomp(currentNode->children[i],start,i,suggestions);
         return suggestions;
+    }
+    void counter(TrieNode* root,int& cnt)
+    {
+        if(root==nullptr)
+            return;
+        if(root->isEndOfWord)
+            cnt++;
+        for(int i=0;i<26;i++)
+            counter(root->children[i],cnt);  
+        return;
+    }
+    void wordcount()
+    {
+        int count=0;
+        counter(root,count);
+        cout<<"Total words in Trie: "<<count<<endl;
     }
 };
 
@@ -358,8 +375,13 @@ int main()
         bool found = trie.search(word);
         cout << "Search '" << word << "': " << (found ? "FOUND" : "NOT FOUND") << endl;
     }
-
+    
     cout << "\n=== ALL TESTS COMPLETED ===" << endl;
+    cout << "\n=== BONUS ===" << endl;
+    cout << "\n7. Testing words counter:" << endl;
+    cout << "============================" << endl;
+    trie.wordcount();
+    cout << "\n=== BONUS COMPLETED ===" << endl;
 
     return 0;
 }
