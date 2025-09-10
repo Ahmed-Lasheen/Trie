@@ -65,9 +65,10 @@ public:
             root = new TrieNode(); // make a new one
         }
         TrieNode *temp = root;
-
-        for (char thisChar : word)
+        int i = 0;
+        for (int i = 0; i < word.length(); i++)
         {
+            char thisChar = word[i];
             if (thisChar < ' ')
             {
                 continue;
@@ -80,6 +81,10 @@ public:
                 // then make a trienode at that children position (like saying that there is actually a character here)
                 // just like in the frequency array when assigning 1 to the index of a character
                 temp->children[index] = new TrieNode();
+            }
+            if (temp->children[0])
+            {
+                temp->isEndOfWord = true; // Hazem Magdy
             }
             // then after this we anyway go to that node if there is a node or not
             temp = temp->children[index];
@@ -240,7 +245,7 @@ int main()
     cout << "\n1. Testing basic insertion and search:" << endl;
     cout << "======================================" << endl;
 
-    vector<string> words = {"apple", "banana", "orange", "grape", "kiwi"};
+    vector<string> words = {"apple", "banana", "orange", "grape", "kiwi", "application"};
     for (const string &word : words)
     {
         trie.insert(word);
@@ -379,10 +384,27 @@ int main()
 
     trie.insert("Hello");
     trie.insert("WORLD");
-    // H  H
-    // H
+    trie.insert("Hazem Magdy Lasheen");
+    trie.insert("_Hello");
+    trie.insert("1234 Ahmed");
+    trie.insert("ahmed-lasheen");
+    trie.insert("lasheen_hazem");
 
-    vector<string> caseWords = {"hello", "Hello", "WORLD", "world"};
+    vector<string> caseWords = {
+        "hello",               // not found
+        "Hello",               // found
+        "WORLD",               // found
+        "world",               // not found
+        "HAZEM",               // not found (all uppercase)
+        "Hazem Magdy Lasheen", // found
+        "_Hello",              // found
+        "1234 Ahmed",          // found
+        "hazem_lasheen",       // found
+        "hazem_Lasheen",       // not found "L capital"
+        "ahmed-lasheen",       // found
+        "lasheen_hazem"        // found
+    };
+
     for (const string &word : caseWords)
     {
         bool found = trie.search(word);
@@ -394,6 +416,13 @@ int main()
     cout << "\n7. Testing words counter:" << endl;
     cout << "============================" << endl;
     trie.wordcount();
+
+    cout << "\n8. Testing longest word:" << endl;
+    cout << "============================" << endl;
+
+    cout << "\n9. Testing remove word:" << endl;
+    cout << "============================" << endl;
+
     cout << "\n=== BONUS COMPLETED ===" << endl;
 
     return 0;
