@@ -36,6 +36,51 @@ private:
         // not needed
     }
 
+    // Helper for remove
+    bool removeHelper(TrieNode *node, const string &word, int wordIdx)
+    {
+        if (!node)
+            return false;
+        if (wordIdx == word.size())
+        {
+            if (!node->isEndOfWord)
+                return false;
+            node->isEndOfWord = false;
+            for (int i = 0; i < 96; i++)
+            {
+                if (node->children[i])
+                    return false;
+            }
+            return true;
+        }
+
+        char c = word[wordIdx];
+        if (c < ' ')
+            return false;
+        int index = c - ' ';
+
+        if (node->children[index] == nullptr)
+            return false;
+
+        bool shouldDeleteChild = removeHelper(node->children[index], word, wordIdx + 1);
+
+        if (shouldDeleteChild)
+        {
+            delete node->children[index];
+            node->children[index] = nullptr;
+            if (!node->isEndOfWord)
+            {
+                for (int i = 0; i < 96; i++)
+                {
+                    if (node->children[i])
+                        return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 public:
     Trie()
     {
@@ -188,6 +233,12 @@ public:
         return suggestions;
     }
 
+    void remove(string word)
+    {
+        if (!root)
+            return;
+        removeHelper(root, word, 0);
+    }
     // Bonus functions : counter
     void counter(TrieNode *root, int &count)
     {
@@ -399,6 +450,13 @@ int main()
 
     cout << "\n9. Testing remove word:" << endl;
     cout << "============================" << endl;
+
+    bool found = trie.search("_Hello");
+    trie.remove("_hello");                                                              // should not do anything
+    cout << "Search '" << "_Hello" << "': " << (found ? "FOUND" : "NOT FOUND") << endl; // FOUND
+    trie.remove("_Hello");                                                              // should remove _Hello
+    found = trie.search("_Hello");
+    cout << "Search '" << "_Hello" << "': " << (found ? "FOUND" : "NOT FOUND") << endl; // NOT FOUND
 
     cout << "\n=== BONUS COMPLETED ===" << endl;
 
