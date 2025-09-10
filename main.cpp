@@ -68,22 +68,17 @@ public:
 
         for (char thisChar : word)
         {
-            if (thisChar > 'A' && thisChar < 'Z') // make uppercase letters lowercase
+            if (thisChar < ' ')
             {
-                thisChar = thisChar - 'A' + 'a';
+                continue;
             }
+            int index = thisChar - ' ';
 
-            if (thisChar < 'a' || thisChar > 'z') // if it is not a letter (notice that uppercase is already handled)
-            {
-                continue; // don't take it into consideration
-            }
-            int index = thisChar - 'a';
-
-            // if there is no node in children[index] it means that that letter is not there
+            // if there is no node in children[index] it means that that character is not there
             if (temp->children[index] == nullptr)
             {
-                // then make a trienode at that children position (like saying that there is actually a letter here)
-                // just like in the frequency array when assigning 1 to the index of a letter
+                // then make a trienode at that children position (like saying that there is actually a character here)
+                // just like in the frequency array when assigning 1 to the index of a character
                 temp->children[index] = new TrieNode();
             }
             // then after this we anyway go to that node if there is a node or not
@@ -107,16 +102,11 @@ public:
 
         for (char thisChar : word)
         {
-            if (thisChar > 'A' && thisChar < 'Z') // make uppercase letters lowercase
+            if (thisChar < ' ')
             {
-                thisChar = thisChar - 'A' + 'a';
+                continue;
             }
-
-            if (thisChar < 'a' || thisChar > 'z') // if it is not a letter (notice that uppercase is already handled)
-            {
-                continue; // don't take it into consideration
-            }
-            int index = thisChar - 'a';
+            int index = thisChar - ' ';
 
             // if there is a letter in the index then it is there, if it is null then its not
             if (temp->children[index] == nullptr)
