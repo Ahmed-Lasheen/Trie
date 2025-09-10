@@ -12,10 +12,6 @@ public:
 
     // Marks if this node completes a word
     bool isEndOfWord;
-    // you  //u is end of word
-    // your
-    // you're
-
     // Constructor
     TrieNode()
     {
@@ -32,32 +28,22 @@ class Trie
 {
 private:
     TrieNode *root;
+
     // Helper function to find all words from a node
-    // Input: current node, current word formed so far, results vector to store words
-    // Output: none (modifies results vector by reference)
-    // Purpose: Recursively find all complete words starting from the given node
     void findAllWords(TrieNode *node, string currentWord, vector<string> &results)
     {
         // TODO: Implement this function
+        // not needed
     }
-    // int count=0;
 
 public:
-    // Constructor
-    // Input: none
-    // Output: none
-    // Purpose: Initialize the Trie with a root node
     Trie()
     {
         // TODO: Implement this function
-        // start null
         root = new TrieNode();
     }
 
     // Insert a word into the Trie
-    // Input: word to insert (string)
-    // Output: none
-    // Purpose: Add a word to the Trie by creating nodes for each character
     void insert(string word)
     {
         if (!root) // if there is no trie
@@ -93,9 +79,6 @@ public:
     }
 
     // Search for a word in the Trie
-    // Input: word to search for (string)
-    // Output: boolean indicating if the word exists
-    // Purpose: Check if the complete word exists in the Trie
     bool search(string word)
     {
         if (!root)
@@ -124,9 +107,6 @@ public:
     }
 
     // Check if any word starts with the given prefix //yo //you //your //you're //yo yo
-    // Input: prefix to check (string)
-    // Output: boolean indicating if any word has this prefix
-    // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
     bool startsWith(string prefix)
     {
         if (!root)
@@ -231,9 +211,6 @@ public:
 };
 
 // Main function
-// Input: none
-// Output: integer return code
-// Purpose: Program entry point, run tests and interactive demo
 int main()
 {
     cout << "=== TRIE DATA STRUCTURE IMPLEMENTATION ===" << endl;
@@ -245,7 +222,7 @@ int main()
     cout << "\n1. Testing basic insertion and search:" << endl;
     cout << "======================================" << endl;
 
-    vector<string> words = {"apple", "banana", "orange", "grape", "kiwi", "application"};
+    vector<string> words = {"apple", "banana", "orange", "grape", "kiwi"};
     for (const string &word : words)
     {
         trie.insert(word);
