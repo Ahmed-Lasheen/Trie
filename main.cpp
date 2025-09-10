@@ -44,7 +44,7 @@ public:
     Trie() {
         // TODO: Implement this function
         //start null
-        root=nullptr;
+        root=new TrieNode();
     }
     
     // Insert a word into the Trie
@@ -69,8 +69,23 @@ public:
     // Output: boolean indicating if any word has this prefix
     // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
     bool startsWith(string prefix) {//MENNA
-        // TODO: Implement this function
-        return false; // placeholder
+        TrieNode*current=root;
+        for(char c:prefix)
+        {
+            int index= c-'a'; //lowercase letters
+            if(index<0|| index>=26)
+            {
+                return false; //character not valid
+
+            }
+            if(current->children[index]==nullptr)
+            {
+                return false;
+            }
+            current=current->children[index];
+        }
+        
+        return true ; 
     }
     
     // Get all words that start with the given prefix
