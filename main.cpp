@@ -22,7 +22,7 @@ public:
         }
     }
 };
-// status
+
 // The Trie class
 class Trie
 {
